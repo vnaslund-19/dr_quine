@@ -34,6 +34,7 @@ Sully: Sully.o
 clean:
 	rm -f $(OBJ)
 	rm -f $(SULLY_DIR)/*.o
+	rm -f Grace_kid.s
 	@echo "Cleaned object files."
 
 fclean: clean
