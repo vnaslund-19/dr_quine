@@ -1,39 +1,29 @@
-NASM    = nasm
-LD      = gcc
-NASMFLAGS = -f elf64
+NASM = nasm
+ASMFLAGS = -f elf64
 
-COLLEEN = Colleen
-GRACE   = Grace
-SULLY   = Sully
+GCC = gcc
+LDFLAGS = -nostartfiles -no-pie
 
-SRC_COLLEEN = Colleen.s
-SRC_GRACE   = Grace.s
-SRC_SULLY   = Sully.s
+SRC = Colleen.s Grace.s Sully.s
+OBJ = $(SRC:.s=.o)
+BIN = Colleen Grace Sully
 
-OBJ_COLLEEN = $(SRC_COLLEEN:.s=.o)
-OBJ_GRACE   = $(SRC_GRACE:.s=.o)
-OBJ_SULLY   = $(SRC_SULLY:.s=.o)
+.SUFFIXES:
 
-.PHONY: all clean fclean re
-
-all: $(COLLEEN) $(GRACE) $(SULLY)
-
-$(COLLEEN): $(OBJ_COLLEEN)
-	$(LD) $(OBJ_COLLEEN) -o $(COLLEEN)
-
-$(GRACE): $(OBJ_GRACE)
-	$(LD) $(OBJ_GRACE) -o $(GRACE)
-
-$(SULLY): $(OBJ_SULLY)
-	$(LD) $(OBJ_SULLY) -o $(SULLY)
+all: $(BIN)
 
 %.o: %.s
-	$(NASM) $(NASMFLAGS) $< -o $@
+	$(NASM) $(ASMFLAGS) $< -o $@
+
+%: %.o
+	$(GCC) $(LDFLAGS) $< -o $@
 
 clean:
-	@rm -f *.o
+	rm -f $(OBJ) Sully_*.o Sully_*.s Grace_kid.s
 
 fclean: clean
-	@rm -f $(COLLEEN) $(GRACE) $(SULLY)
+	rm -f $(BIN) tmp*
 
 re: fclean all
+
+.PHONY: all clean fclean re

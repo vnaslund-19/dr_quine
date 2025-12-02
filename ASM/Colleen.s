@@ -1,28 +1,24 @@
-; Outside comment
+section .text
+
+	global main
+	extern printf
+	; Outside comment
+
+main:
+	; Inside comment
+	push	rbp
+	mov		rbp, rsp
+	lea		rdi, [rel str]
+	lea		rsi, [rel str]
+	mov		rdx, 10
+	mov		rcx, 9
+	mov		r8, 34
+	call	printf wrt ..plt
+	mov		rax, 0
+	leave
+	ret
 
 section .data
-src: db "; Outside comment",10,10,\
-"section .data",10,\
-"src: db ",34,"; Outside comment",34,",10,10,",34,"section .data",34,",10,",34,"src: db ",34,34,"; Inside comment",34,34,",34,",34,"section .text",34,",10,",34,"global _start",34,",10,",34,"_start:",34,",10,",34,"    ; Inside comment",34,",10,",34,"    mov rsi, src",34,",10,",34,"    mov rdx, src_end - src",34,",10,",34,"    call print",34,",10,",34,"exit:",34,",10,",34,"    mov rax, 60",34,",10,",34,"    xor rdi, rdi",34,",10,",34,"    syscall",34,",10,",34,"print:",34,",10,",34,"    mov rax, 1",34,",10,",34,"    mov rdi, 1",34,",10,",34,"    syscall",34,",10,",34,"    ret",34
-src_end:
 
-section .text
-global _start
-
-_start:
-    ; Inside comment
-    mov rsi, src            ; pointer to source
-    mov rdx, src_end - src  ; length
-    call print
-    jmp exit
-
-exit:
-    mov rax, 60
-    xor rdi, rdi
-    syscall
-
-print:
-    mov rax, 1
-    mov rdi, 1
-    syscall
-    ret
+str:
+	db "section .text%2$c%2$c%3$cglobal main%2$c%3$cextern printf%2$c%3$c; Outside comment%2$c%2$cmain:%2$c%3$c; Inside comment%2$c%3$cpush%3$crbp%2$c%3$cmov%3$c%3$crbp, rsp%2$c%3$clea%3$c%3$crdi, [rel str]%2$c%3$clea%3$c%3$crsi, [rel str]%2$c%3$cmov%3$c%3$crdx, 10%2$c%3$cmov%3$c%3$crcx, 9%2$c%3$cmov%3$c%3$cr8, 34%2$c%3$ccall%3$cprintf wrt ..plt%2$c%3$cmov%3$c%3$crax, 0%2$c%3$cleave%2$c%3$cret%2$c%2$csection .data%2$c%2$cstr:%2$c%3$cdb %4$c%1$s%4$c, 0%2$c", 0
