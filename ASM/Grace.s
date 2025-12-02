@@ -1,43 +1,40 @@
-; A single required comment
+%define OUTFILE "Grace_kid.s"
+%define CODE "%%define OUTFILE %3$cGrace_kid.s%3$c%1$c%%define CODE %3$c%4$s%3$c%1$c%%define FN main%1$c%1$cextern fprintf%1$cextern fopen%1$cextern fclose%1$c; 42%1$csection .data%1$c%2$ccode db CODE, 0%1$c%2$coutfile db OUTFILE, 0%1$c%2$cmode db %3$cw%3$c, 0%1$c%2$cfileptr db 0%1$c%1$csection .text%1$c%2$cglobal FN%1$c%1$cFN:%1$c%2$cpush rbp%1$c%2$cmov rbp, rsp%1$c%1$c%2$cmov rdi, outfile%1$c%2$cmov rsi, mode%1$c%2$ccall fopen%1$c%1$c%2$cmov [fileptr], rax%1$c%1$c%2$cmov rdi, [fileptr]%1$c%2$cmov rsi, code%1$c%2$cmov rdx, 0x0A%1$c%2$cmov rcx, 0x09%1$c%2$cmov r8, 0x22%1$c%2$cmov r9, code%1$c%2$ccall fprintf%1$c%1$c%2$cmov rdi, [fileptr]%1$c%2$ccall fclose%1$c%1$c%2$cleave%1$c%2$cret"
+%define FN main
 
-%define NL 10
-%define QT 34
-%define S  " grace_source "
-
+extern fprintf
+extern fopen
+extern fclose
+; 42
 section .data
-grace_source: db "; A single required comment",NL,NL,\
-"%define NL 10",NL,\
-"%define QT 34",NL,\
-"%define S  ",QT," grace_source ",QT,NL,NL,\
-"section .data",NL,\
-"grace_source: db ",QT,"; A single required comment",QT,",NL,NL,",QT,"%define NL 10",QT,",NL,",QT,"%define QT 34",QT,",NL,",QT,"%define S  ",QT," grace_source ",QT,",NL,NL,",QT,"section .data",QT,",NL,",QT,"grace_source: db ",QT,",QT,",QT,"; A single required comment",QT,",QT,",QT,",NL,NL,",QT,"%define NL 10",QT,",QT,",QT,",NL,",QT,"%define QT 34",QT,",QT,",QT,",NL,",QT,"%define S  ",QT," grace_source ",QT,",QT,",QT,",NL,NL,",QT,"section .data",QT,",QT",NL,\
-"bytes_end:
+	code db CODE, 0
+	outfile db OUTFILE, 0
+	mode db "w", 0
+	fileptr db 0
 
 section .text
-global _start
+	global FN
 
-_start:
-    mov rax, 2              ; sys_open
-    mov rdi, filename
-    mov rsi, 577            ; O_CREAT | O_WRONLY | O_TRUNC
-    mov rdx, 0644
-    syscall
+FN:
+	push rbp
+	mov rbp, rsp
 
-    mov r12, rax            ; save fd
+	mov rdi, outfile
+	mov rsi, mode
+	call fopen
 
-    mov rax, 1              ; sys_write
-    mov rdi, r12
-    mov rsi, grace_source
-    mov rdx, bytes_end - grace_source
-    syscall
+	mov [fileptr], rax
 
-    mov rax, 3              ; sys_close
-    mov rdi, r12
-    syscall
+	mov rdi, [fileptr]
+	mov rsi, code
+	mov rdx, 0x0A
+	mov rcx, 0x09
+	mov r8, 0x22
+	mov r9, code
+	call fprintf
 
-    mov rax, 60             ; sys_exit
-    xor rdi, rdi
-    syscall
+	mov rdi, [fileptr]
+	call fclose
 
-section .data
-filename: db "Grace_kid.s", 0
+	leave
+	ret
